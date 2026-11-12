@@ -1,0 +1,54 @@
+﻿@model IEnumerable<BookStoreApp.Models.CartItem>
+@{
+    ViewBag.Title = "Giỏ hàng của bạn";
+}
+
+<h2 class="my-4">Giỏ hàng</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Giỏ hàng của bạn đang trống! <a href="@Url.Action("Index", "Home")">Tiếp tục mua sắm</a></div>
+}
+else
+{
+    <table class="table table-bordered align-middle">
+        <thead>
+            <tr>
+                <th>Tên sách</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Price.ToString("N0") VNĐ</td>
+                    <td>
+                        @using (Html.BeginForm("UpdateCart", "Cart", FormMethod.Post, new { @class = "d-flex" }))
+                        {
+                            <input type="hidden" name="id" value="@item.BookID" />
+                            <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control me-2" style="width: 80px;" />
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Cập nhật</button>
+                        }
+                    </td>
+                    <td>@item.Total.ToString("N0") VNĐ</td>
+                    <td>
+                        <a href="@Url.Action("RemoveFromCart", "Cart", new { id = item.BookID })" class="btn btn-sm btn-danger">Xóa</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <h4>Tổng tiền: <span class="text-danger">@ViewBag.TotalAmount.ToString("N0") VNĐ</span></h4>
+        <div>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">Tiếp tục mua hàng</a>
+            <a href="@Url.Action("Checkout", "Cart")" class="btn btn-success">Thanh toán</a>
+        </div>
+    </div>
+}

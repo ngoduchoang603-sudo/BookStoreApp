@@ -1,0 +1,54 @@
+﻿@model BookStoreApp.Models.Book
+@{
+    ViewBag.Title = "Thêm sách mới";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="mb-4">Thêm sách mới</h2>
+
+@using (Html.BeginForm("Create", "Books", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="mb-3">
+                <label class="form-label font-weight-bold">Tên sách</label>
+                @Html.TextBoxFor(m => m.Title, new { @class = "form-control", @required = "required" })
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Tác giả</label>
+                    @Html.TextBoxFor(m => m.Author, new { @class = "form-control", @required = "required" })
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Danh mục</label>
+                    @Html.DropDownList("CategoryID", null, "-- Chọn danh mục --", new { @class = "form-select", @required = "required" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Giá bán (VNĐ)</label>
+                    @Html.TextBoxFor(m => m.Price, new { @class = "form-control", @type = "number", @step = "1000", @required = "required" })
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Số lượng tồn kho</label>
+                    @Html.TextBoxFor(m => m.StockQuantity, new { @class = "form-control", @type = "number", @required = "required" })
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Mô tả sách</label>
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", @rows = "5" })
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label class="form-label">Ảnh bìa sách</label>
+                <input type="file" name="ImageFile" class="form-control" accept="image/*" />
+            </div>
+            <button type="submit" class="btn btn-success w-100 py-2 mt-3">Lưu sách mới</button>
+            <a href="@Url.Action("Index", "Books", new { area = "Admin" })" class="btn btn-secondary w-100 py-2 mt-2">Hủy bỏ</a>
+        </div>
+    </div>
+}

@@ -1,0 +1,39 @@
+﻿@model IEnumerable<BookStoreApp.Models.Order>
+@{
+    ViewBag.Title = "Quản lý Đơn hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="mb-4">Danh sách Đơn hàng</h2>
+
+<table class="table table-bordered table-hover align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Mã đơn</th>
+            <th>Ngày đặt</th>
+            <th>Tên khách hàng</th>
+            <th>Tổng tiền</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td><strong>#@item.OrderID</strong></td>
+                <td>@item.OrderDate.Value.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@(item.User != null ? item.User.FullName : "Khách vãng lai")</td>
+                <td class="text-danger fw-bold">@item.TotalAmount.ToString("N0") VNĐ</td>
+                <td>
+                    <span class="badge @(item.Status == "Hoàn thành" ? "bg-success" : (item.Status == "Đã hủy" ? "bg-danger" : "bg-warning text-dark"))">
+                        @item.Status
+                    </span>
+                </td>
+                <td>
+                    <a href="@Url.Action("Details", "Orders", new { area = "Admin", id = item.OrderID })" class="btn btn-sm btn-info text-white">Xem & Duyệt</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

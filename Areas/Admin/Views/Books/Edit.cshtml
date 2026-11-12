@@ -1,0 +1,60 @@
+﻿@model BookStoreApp.Models.Book
+@{
+    ViewBag.Title = "Chỉnh sửa sách";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="mb-4">Cập nhật thông tin sách</h2>
+
+@using (Html.BeginForm("Edit", "Books", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.BookID)
+    @Html.HiddenFor(m => m.ImageUrl)
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="mb-3">
+                <label class="form-label font-weight-bold">Tên sách</label>
+                @Html.TextBoxFor(m => m.Title, new { @class = "form-control", @required = "required" })
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Tác giả</label>
+                    @Html.TextBoxFor(m => m.Author, new { @class = "form-control", @required = "required" })
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Danh mục</label>
+                    @Html.DropDownList("CategoryID", null, new { @class = "form-select" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Giá bán (VNĐ)</label>
+                    @Html.TextBoxFor(m => m.Price, new { @class = "form-control", @type = "number", @step = "1000", @required = "required" })
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Số lượng tồn kho</label>
+                    @Html.TextBoxFor(m => m.StockQuantity, new { @class = "form-control", @type = "number", @required = "required" })
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Mô tả sách</label>
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", @rows = "5" })
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="mb-3">
+                <label class="form-label">Ảnh bìa hiện tại</label>
+                <div class="mb-2">
+                    <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "https://via.placeholder.com/150" : Model.ImageUrl)" class="img-thumbnail" style="max-height: 200px;" />
+                </div>
+                <label class="form-label">Thay đổi ảnh bìa mới</label>
+                <input type="file" name="ImageFile" class="form-control" accept="image/*" />
+            </div>
+            <button type="submit" class="btn btn-primary w-100 py-2 mt-3">Cập nhật thay đổi</button>
+            <a href="@Url.Action("Index", "Books", new { area = "Admin" })" class="btn btn-secondary w-100 py-2 mt-2">Quay lại</a>
+        </div>
+    </div>
+}

@@ -1,0 +1,76 @@
+﻿@model BookStoreApp.Models.Order
+@{
+    ViewBag.Title = "Đặt hàng thành công";
+}
+
+<div class="row justify-content-center my-5">
+    <div class="col-md-8 text-center">
+        <div class="card border-0 shadow-sm rounded-4 p-5">
+            <div class="mb-3 text-success">
+                <i class="fa-solid fa-circle-check display-1"></i>
+            </div>
+            <h2 class="fw-bold text-dark">Đặt hàng thành công!</h2>
+            <p class="text-muted fs-5">Mã đơn hàng: <strong class="text-primary">#@Model.OrderID</strong></p>
+
+            <!-- 1. Ngân hàng VietQR -->
+            @if (Model.PaymentMethod == "BANK")
+            {
+                <div class="alert alert-warning border-0 rounded-4 my-4 p-4 text-start shadow-sm">
+                    <h5 class="fw-bold text-dark text-center mb-3"><i class="fa-solid fa-qrcode me-2"></i>Quét mã VietQR Ngân hàng</h5>
+                    <div class="row align-items-center">
+                        <div class="col-md-5 text-center mb-3 mb-md-0">
+                            <img src="https://img.vietqr.io/image/MB-0383321300-compact2.png?amount=@Convert.ToInt64(Model.TotalAmount)&addInfo=BOOKSTORE @Model.OrderID&accountName=NHA SACH BOOKSTORE"
+                                 class="img-fluid rounded border p-2 bg-white shadow-sm" style="max-width: 220px;" alt="Mã QR VietQR" />
+                        </div>
+                        <div class="col-md-7">
+                            <p class="mb-1"><strong>Ngân hàng:</strong> MBBank</p>
+                            <p class="mb-1"><strong>Số tài khoản:</strong> <span class="text-danger fw-bold fs-5">0383321300</span></p>
+                            <p class="mb-1"><strong>Chủ tài khoản:</strong> NHÀ SÁCH BOOKSTORE</p>
+                            <p class="mb-1"><strong>Số tiền:</strong> <span class="text-danger fw-bold">@Model.TotalAmount.ToString("N0") VNĐ</span></p>
+                            <p class="mb-0"><strong>Nội dung:</strong> <span class="badge bg-dark">BOOKSTORE @Model.OrderID</span></p>
+                        </div>
+                    </div>
+                </div>
+            }
+            <!-- 2. Ví MoMo -->
+            else if (Model.PaymentMethod == "MOMO")
+            {
+            <div class="alert alert-danger border-0 rounded-4 my-4 p-4 text-start shadow-sm" style="background-color: #fff0f5;">
+                <h5 class="fw-bold text-danger text-center mb-3"><i class="fa-solid fa-mobile-screen me-2"></i>Thanh toán qua Ví MoMo</h5>
+                <div class="row align-items-center">
+                    <div class="col-md-5 text-center mb-3 mb-md-0">
+                        <!-- QR MoMo động -->
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=2|99|0987654321|||0|0|@Convert.ToInt64(Model.TotalAmount)|BOOKSTORE%20@Model.OrderID|transfer_my_qr"
+                             class="img-fluid rounded border p-2 bg-white shadow-sm" style="max-width: 200px;" alt="Mã QR MoMo" />
+                    </div>
+                    <div class="col-md-7">
+                        <p class="mb-1"><strong>Số điện thoại MoMo:</strong> <span class="text-danger fw-bold fs-5">0987654321</span></p>
+                        <p class="mb-1"><strong>Tên tài khoản:</strong> CỬA HÀNG BOOKSTORE</p>
+                        <p class="mb-1"><strong>Số tiền:</strong> <span class="text-danger fw-bold">@Model.TotalAmount.ToString("N0") VNĐ</span></p>
+                        <p class="mb-0"><strong>Lưu ý:</strong> Vui lòng giữ nguyên nội dung chuyển tiền <strong class="text-primary">BOOKSTORE @Model.OrderID</strong></p>
+                    </div>
+                </div>
+            </div>
+            }
+            <!-- 3. VNPay -->
+            else if (Model.PaymentMethod == "VNPAY")
+            {
+            <div class="alert alert-success border-0 rounded-4 my-4 p-3">
+                <i class="fa-solid fa-shield-halved me-2"></i>Đơn hàng đã được xác nhận thanh toán qua cổng <strong>VNPay</strong>.
+            </div>
+            }
+            <!-- 4. COD -->
+            else
+            {
+            <div class="alert alert-info border-0 rounded-4 my-4 p-3">
+                <i class="fa-solid fa-truck-fast me-2"></i>Đơn hàng sẽ giao tận nơi. Chuẩn bị <strong class="text-danger">@Model.TotalAmount.ToString("N0") VNĐ</strong> khi nhận hàng.
+            </div>
+            }
+
+            <div class="d-flex justify-content-center gap-3 mt-3">
+                <a href="@Url.Action("Index", "Home")" class="btn btn-outline-primary rounded-pill px-4">Tiếp tục mua hàng</a>
+                <a href="@Url.Action("OrderHistory", "Account")" class="btn btn-primary rounded-pill px-4">Xem lịch sử đơn hàng</a>
+            </div>
+        </div>
+    </div>
+</div>

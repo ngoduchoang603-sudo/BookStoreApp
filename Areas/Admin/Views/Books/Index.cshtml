@@ -1,0 +1,47 @@
+﻿@model IEnumerable<BookStoreApp.Models.Book>
+@{
+    ViewBag.Title = "Quản lý Sách";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Danh sách Sách</h2>
+    <a href="@Url.Action("Create", "Books", new { area = "Admin" })" class="btn btn-primary">+ Thêm sách mới</a>
+</div>
+
+<table class="table table-bordered table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Ảnh</th>
+            <th>Tên sách</th>
+            <th>Tác giả</th>
+            <th>Danh mục</th>
+            <th>Giá bán</th>
+            <th>Tồn kho</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-center">
+                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://via.placeholder.com/60x80" : item.ImageUrl)" style="width: 50px; height: 70px; object-fit: cover;" class="rounded" />
+                </td>
+                <td><strong>@item.Title</strong></td>
+                <td>@item.Author</td>
+                <td>@(item.Category != null ? item.Category.CategoryName : "N/A")</td>
+                <td class="text-danger fw-bold">@item.Price.ToString("N0") VNĐ</td>
+                <td>
+                    <span class="badge @(item.StockQuantity > 0 ? "bg-success" : "bg-danger")">
+                        @item.StockQuantity
+                    </span>
+                </td>
+                <td>
+                    <a href="@Url.Action("Edit", "Books", new { area = "Admin", id = item.BookID })" class="btn btn-sm btn-warning">Sửa</a>
+                    <a href="@Url.Action("Delete", "Books", new { area = "Admin", id = item.BookID })" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sách này?');">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

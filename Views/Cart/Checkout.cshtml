@@ -1,0 +1,107 @@
+﻿@model IEnumerable<BookStoreApp.Models.CartItem>
+@{
+    ViewBag.Title = "Thanh toán đơn hàng";
+    var cart = Session["Cart"] as List<BookStoreApp.Models.CartItem>;
+    decimal totalAmount = cart != null ? cart.Sum(i => i.Total) : 0;
+}
+
+<h2 class="my-4 fw-bold"><i class="fa-solid fa-credit-card text-primary me-2"></i>Thanh toán & Đặt hàng</h2>
+
+@using (Html.BeginForm("Checkout", "Cart", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row g-4">
+        <!-- Thông tin giao hàng -->
+        <div class="col-md-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                <h5 class="fw-bold mb-3"><i class="fa-solid fa-location-dot text-danger me-2"></i>Thông tin nhận hàng</h5>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Họ và tên người nhận</label>
+                    <input type="text" name="fullName" class="form-control" value="@Session["UserName"]" required placeholder="Nhập đầy đủ họ tên" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Số điện thoại</label>
+                    <input type="tel" name="phone" class="form-control" required placeholder="Nhập số điện thoại" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Địa chỉ chi tiết</label>
+                    <textarea name="address" class="form-control" rows="3" required placeholder="Số nhà, tên đường, phường/xã, quận/huyện..."></textarea>
+                </div>
+            </div>
+
+            <!-- Phương thức Thanh toán -->
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h5 class="fw-bold mb-3"><i class="fa-solid fa-wallet text-success me-2"></i>Chọn phương thức thanh toán</h5>
+
+                <!-- 1. COD -->
+                <div class="form-check custom-option mb-3 p-3 border rounded-3">
+                    <input class="form-check-input ms-0 me-2" type="radio" name="paymentMethod" id="payCOD" value="COD" checked>
+                    <label class="form-check-label fw-semibold" for="payCOD">
+                        <i class="fa-solid fa-truck-fast text-secondary me-2"></i>Thanh toán khi nhận hàng (COD)
+                    </label>
+                    <div class="small text-muted ms-4">Thanh toán bằng tiền mặt khi giao hàng.</div>
+                </div>
+
+                <!-- 2. Ngân hàng VietQR -->
+                <div class="form-check custom-option mb-3 p-3 border rounded-3">
+                    <input class="form-check-input ms-0 me-2" type="radio" name="paymentMethod" id="payBank" value="BANK">
+                    <label class="form-check-label fw-semibold" for="payBank">
+                        <i class="fa-solid fa-qrcode text-primary me-2"></i>Chuyển khoản Ngân hàng (Mã QR VietQR)
+                    </label>
+                    <div class="small text-muted ms-4">Quét mã QR qua app ngân hàng (MB, Vietcombank, Techcombank...).</div>
+                </div>
+
+                <!-- 3. Ví MoMo -->
+                <div class="form-check custom-option mb-3 p-3 border rounded-3">
+                    <input class="form-check-input ms-0 me-2" type="radio" name="paymentMethod" id="payMoMo" value="MOMO">
+                    <label class="form-check-label fw-semibold" for="payMoMo">
+                        <i class="fa-solid fa-mobile-screen text-danger me-2"></i>Ví điện tử MoMo (Quét QR MoMo)
+                    </label>
+                    <div class="small text-muted ms-4">Chuyển tiền nhanh qua ứng dụng Ví MoMo.</div>
+                </div>
+
+                <!-- 4. VNPay -->
+                <div class="form-check custom-option p-3 border rounded-3">
+                    <input class="form-check-input ms-0 me-2" type="radio" name="paymentMethod" id="payVNPay" value="VNPAY">
+                    <label class="form-check-label fw-semibold" for="payVNPay">
+                        <i class="fa-solid fa-credit-card text-info me-2"></i>Cổng thanh toán VNPay (ATM / Visa / QR)
+                    </label>
+                    <div class="small text-muted ms-4">Thanh toán bảo mật qua cổng thanh toán VNPay Sandbox.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tóm tắt đơn hàng -->
+        <div class="col-md-5">
+            <div class="card border-0 shadow-sm rounded-4 p-4 sticky-md-top" style="top: 90px;">
+                <h5 class="fw-bold mb-3">Tóm tắt đơn hàng</h5>
+                <ul class="list-group list-group-flush mb-3">
+                    @if (cart != null)
+                    {
+                        foreach (var item in cart)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div>
+                                    <h6 class="my-0 text-truncate" style="max-width: 200px;">@item.Title</h6>
+                                    <small class="text-muted">SL: @item.Quantity x @item.Price.ToString("N0") đ</small>
+                                </div>
+                                <span class="fw-semibold">@item.Total.ToString("N0") đ</span>
+                            </li>
+                        }
+                    }
+                </ul>
+
+                <hr />
+                <div class="d-flex justify-content-between fs-5 fw-bold mb-4">
+                    <span>Tổng thanh toán</span>
+                    <span class="text-danger">@totalAmount.ToString("N0") VNĐ</span>
+                </div>
+
+                <button type="submit" class="btn btn-success btn-lg w-100 rounded-pill fw-bold">
+                    <i class="fa-solid fa-check me-2"></i>Xác nhận đặt hàng
+                </button>
+            </div>
+        </div>
+    </div>
+}

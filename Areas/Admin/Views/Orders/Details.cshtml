@@ -1,0 +1,66 @@
+﻿@model BookStoreApp.Models.Order
+@{
+    ViewBag.Title = "Chi tiết đơn hàng #" + Model.OrderID;
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Chi tiết đơn hàng #@Model.OrderID</h2>
+    <a href="@Url.Action("Index", "Orders", new { area = "Admin" })" class="btn btn-secondary">Quay lại danh sách</a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">Thông tin nhận hàng</div>
+            <div class="card-body">
+                <p><strong>Người nhận / Điện thoại / Địa chỉ:</strong> @Model.ShippingAddress</p>
+                <p><strong>Ngày đặt hàng:</strong> @Model.OrderDate.Value.ToString("dd/MM/yyyy HH:mm")</p>
+                <p><strong>Tổng cộng:</strong> <span class="text-danger fw-bold fs-5">@Model.TotalAmount.ToString("N0") VNĐ</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-dark">Cập nhật trạng thái đơn hàng</div>
+            <div class="card-body">
+                <p>Trạng thái hiện tại: <strong>@Model.Status</strong></p>
+                @using (Html.BeginForm("UpdateStatus", "Orders", new { area = "Admin" }, FormMethod.Post, new { @class = "d-flex gap-2" }))
+                {
+                    <input type="hidden" name="orderId" value="@Model.OrderID" />
+                    <select name="status" class="form-select">
+                        <option value="Chờ xác nhận" @(Model.Status == "Chờ xác nhận" ? "selected" : "")>Chờ xác nhận</option>
+                        <option value="Đang giao" @(Model.Status == "Đang giao" ? "selected" : "")>Đang giao</option>
+                        <option value="Hoàn thành" @(Model.Status == "Hoàn thành" ? "selected" : "")>Hoàn thành</option>
+                        <option value="Đã hủy" @(Model.Status == "Đã hủy" ? "selected" : "")>Đã hủy</option>
+                    </select>
+                    <button type="submit" class="btn btn-success text-nowrap">Cập nhật</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4>Danh sách sản phẩm trong đơn</h4>
+<table class="table table-bordered align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>Tên sách</th>
+            <th>Đơn giá</th>
+            <th>Số lượng</th>
+            <th>Thành tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderDetails)
+        {
+            <tr>
+                <td>@(item.Book != null ? item.Book.Title : "Sách đã bị xóa")</td>
+                <td>@item.UnitPrice.ToString("N0") VNĐ</td>
+                <td>@item.Quantity</td>
+                <td class="fw-bold">@((item.UnitPrice * item.Quantity).ToString("N0")) VNĐ</td>
+            </tr>
+        }
+    </tbody>
+</table>

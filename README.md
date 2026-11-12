@@ -54,7 +54,8 @@ Hệ thống e-commerce bán sách trực tuyến hoàn chỉnh được xây d�
 3. Cập nhật Chuỗi kết nối (Connection String)
    Mở solution BookStoreApp.sln trong Visual Studio.
    Mở file Web.config và chỉnh sửa lại thuộc tính connectionString sao cho khớp với tên Server SQL trên máy của bạn:
+   ```xml
    <add name="BookStoreDBEntities" connectionString="metadata=res://*/Models.BookStoreModel.csdl|...;provider connection string=&quot;data source=YOUR_SERVER_NAME;initial catalog=BookStoreDB;integrated security=True;...&quot;" providerName="System.Data.EntityClient" />
-4. Chạy ứng dụng:
+5. Chạy ứng dụng:
    Nhấn Ctrl + Shift + B để Rebuild Solution.
    Nhấn F5 (hoặc bấm Play IIS Express) để mở trang web.   
